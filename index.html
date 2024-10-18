@@ -69,14 +69,47 @@
     <script>
         $(document).ready(function () {
             // Load modal content from external file
-            $('#modalContainer').load('quoteModal.html');
+            $('#modalContainer').load('quoteModal.html', function() {
+                console.log('Modal content loaded!'); // Check if modal content is loaded
+            });
+
+            // Attach event listener for form submission
+            $(document).on('submit', '#quoteForm', function (e) {
+                e.preventDefault(); // Prevent default submission
+                console.log('Form submitted!'); // Log when the form is submitted
+
+                const formData = {
+                    name: $('#name').val(),
+                    email: $('#email').val(),
+                    phone: $('#phone').val()
+                };
+
+                $.ajax({
+                    url: 'http://localhost:8080/quotes/save', // API endpoint
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    success: function (response) {
+                        alert(response); // Display success message
+                    },
+                    error: function (error) {
+                        console.error('Error:', error);
+                    }
+                });
+
+                // Optionally, close the modal and reset the form
+                $('#quoteModal').modal('hide');
+                $('#quoteForm')[0].reset();
+            });
 
             // Open the modal on button click
             $('#openQuotes').click(function () {
                 $('#quoteModal').modal('show');
             });
         });
+
     </script>
+    
 </body>
 
 </html>
